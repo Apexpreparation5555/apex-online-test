@@ -20,26 +20,22 @@ label.name-label{display:block;font-weight:700;margin-bottom:7px}input[type=text
 .question{margin-bottom:14px}.result-score{font-size:42px;font-weight:900;color:var(--green);text-align:center}.center{text-align:center}.muted{color:var(--muted);font-size:13px}.review-item{border-top:1px solid var(--line);padding:13px 0}.correct{color:var(--green);font-weight:800}.wrong{color:#b42318;font-weight:800}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:0 12px 24px}
 @media(max-width:520px){.card{padding:15px}.stats{gap:7px}.stat{padding:10px 4px}.stat strong{font-size:18px}.q-title{font-size:17px}.timer{font-size:19px}}
-</style>
-  
+</style>  
 <style>
 .academy-header {
   text-align: center;
   padding: 20px;
   background: white;
 }
-
 .academy-logo {
   width: 90px;
   height: 90px;
   object-fit: contain;
 }
-
 .academy-header h1 {
   color: blue;
   font-size: 24px;
 }
-
 .academy-header p {
   color: orange;
   font-weight: bold;
@@ -98,10 +94,8 @@ function renderQuestions(){ $("questions").innerHTML=quiz.map((q,i)=>`<article c
 function updateProgress(){let n=0;quiz.forEach((q,i)=>{if(document.querySelector(`input[name="q${i}"]:checked`))n++});$("answered").textContent=`${n}/10 answered`; $("progressBar").style.width=(n/10*100)+"%";}
 function showTime(){let m=Math.floor(remaining/60),s=remaining%60;$("timer").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;if(remaining<=60)$("timer").style.color="#b42318";}
 function startTest(){if(started)return;student=$("studentName").value.trim();if(!student){$("studentName").focus();alert("कृपया अपना नाम भरें / Please enter your name.");return;}started=true;$("intro").classList.add("hidden");$("testPanel").classList.remove("hidden");renderQuestions();showTime();tick=setInterval(()=>{remaining--;showTime();if(remaining<=0)submitTest(true)},1000);window.scrollTo({top:0,behavior:"smooth"});}
- <script> 
 async function saveResult(score){
   const status = document.getElementById("saveStatus");
-
   try {
     const response = await fetch(
       `${SUPABASE_URL}/rest/v1/test_results`,
@@ -121,11 +115,9 @@ async function saveResult(score){
         })
       }
     );
-
     if (!response.ok) {
       throw new Error("Result save failed");
     }
-
     if (status) status.textContent = "✅ Result successfully saved!";
   } catch (error) {
     if (status) {
@@ -154,26 +146,22 @@ label.name-label{display:block;font-weight:700;margin-bottom:7px}input[type=text
 .question{margin-bottom:14px}.result-score{font-size:42px;font-weight:900;color:var(--green);text-align:center}.center{text-align:center}.muted{color:var(--muted);font-size:13px}.review-item{border-top:1px solid var(--line);padding:13px 0}.correct{color:var(--green);font-weight:800}.wrong{color:#b42318;font-weight:800}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:0 12px 24px}
 @media(max-width:520px){.card{padding:15px}.stats{gap:7px}.stat{padding:10px 4px}.stat strong{font-size:18px}.q-title{font-size:17px}.timer{font-size:19px}}
-</style>
-  
+</style>  
 <style>
 .academy-header {
   text-align: center;
   padding: 20px;
   background: white;
 }
-
 .academy-logo {
   width: 90px;
   height: 90px;
   object-fit: contain;
 }
-
 .academy-header h1 {
   color: blue;
   font-size: 24px;
 }
-
 .academy-header p {
   color: orange;
   font-weight: bold;
@@ -234,7 +222,6 @@ function startTest(){if(started)return;student=$("studentName").value.trim();if(
  <script> 
 async function saveResult(score){
   const status = document.getElementById("saveStatus");
-
   try {
     const response = await fetch(
       `${SUPABASE_URL}/rest/v1/test_results`,
@@ -254,11 +241,9 @@ async function saveResult(score){
         })
       }
     );
-
     if (!response.ok) {
       throw new Error("Result save failed");
     }
-
     if (status) status.textContent = "✅ Result successfully saved!";
   } catch (error) {
     if (status) {
