@@ -231,7 +231,7 @@ function renderQuestions(){ $("questions").innerHTML=quiz.map((q,i)=>`<article c
 function updateProgress(){let n=0;quiz.forEach((q,i)=>{if(document.querySelector(`input[name="q${i}"]:checked`))n++});$("answered").textContent=`${n}/10 answered`; $("progressBar").style.width=(n/10*100)+"%";}
 function showTime(){let m=Math.floor(remaining/60),s=remaining%60;$("timer").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;if(remaining<=60)$("timer").style.color="#b42318";}
 function startTest(){if(started)return;student=$("studentName").value.trim();if(!student){$("studentName").focus();alert("कृपया अपना नाम भरें / Please enter your name.");return;}started=true;$("intro").classList.add("hidden");$("testPanel").classList.remove("hidden");renderQuestions();showTime();tick=setInterval(()=>{remaining--;showTime();if(remaining<=0)submitTest(true)},1000);window.scrollTo({top:0,behavior:"smooth"});}
-  
+ <script> 
 async function saveResult(score){
   const status = document.getElementById("saveStatus");
 
