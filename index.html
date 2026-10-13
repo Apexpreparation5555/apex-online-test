@@ -97,7 +97,45 @@ function renderQuestions(){ $("questions").innerHTML=quiz.map((q,i)=>`<article c
 function updateProgress(){let n=0;quiz.forEach((q,i)=>{if(document.querySelector(`input[name="q${i}"]:checked`))n++});$("answered").textContent=`${n}/10 answered`; $("progressBar").style.width=(n/10*100)+"%";}
 function showTime(){let m=Math.floor(remaining/60),s=remaining%60;$("timer").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;if(remaining<=60)$("timer").style.color="#b42318";}
 function startTest(){if(started)return;student=$("studentName").value.trim();if(!student){$("studentName").focus();alert("कृपया अपना नाम भरें / Please enter your name.");return;}started=true;$("intro").classList.add("hidden");$("testPanel").classList.remove("hidden");renderQuestions();showTime();tick=setInterval(()=>{remaining--;showTime();if(remaining<=0)submitTest(true)},1000);window.scrollTo({top:0,behavior:"smooth"});}
-function submitTest(auto=false){if(finished)return;if(!auto&&!confirm("क्या आप टेस्ट जमा करना चाहते हैं? / Submit your test now?"))return;finished=true;if(tick)clearInterval(tick);let score=0,review="";quiz.forEach((q,i)=>{const chosen=document.querySelector(`input[name="q${i}"]:checked`);const val=chosen?Number(chosen.value):-1;const ok=val===q.a;if(ok)score++;review+=`<div class="review-item"><b>${i+1}. ${q.hi}</b><div class="muted">${q.en}</div><p class="${ok?'correct':'wrong'}">${ok?'✓ सही / Correct':'✗ गलत या छोड़ा / Incorrect or unanswered'}</p><div><b>सही उत्तर / Correct answer:</b> ${"ABCD"[q.a]}. ${q.opts[q.a]}</div><div class="muted" style="margin-top:5px">${q.ex}</div></div>`;});$("testPanel").classList.add("hidden");$("resultPanel").classList.remove("hidden");$("score").textContent=`${score}/10`; $("resultTitle").textContent=score>=8?"शानदार! Excellent!":score>=5?"अच्छा प्रयास! Good effort!":"अभ्यास जारी रखें / Keep practising";$("studentResult").textContent=`${student} • ${new Date().toLocaleString()}`;$("resultMessage").textContent=`प्रतिशत / Percentage: ${score*10}%${auto?" • समय पूरा हुआ, टेस्ट अपने-आप जमा हुआ। / Time expired; auto-submitted.":""}`;$("review").innerHTML=review;window.scrollTo({top:0,behavior:"smooth"});}
+  
+async function saveResult(score){
+  const status = document.getElementById("saveStatus");
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/test_results`,
+      {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify({
+          student_name: student,
+          test_name: "Online GK/GS Quiz - Test 01",
+          score: score,
+          total_marks: quiz.length
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Result save failed");
+    }
+
+    if (status) status.textContent = "✅ Result successfully saved!";
+  } catch (error) {
+    if (status) {
+      status.textContent = "⚠️ Result save nahi hua. Please try again.";
+    }
+  }
+function submitTest(auto=false){if(finished)return;if(!auto&&!confirm("क्या आप टेस्ट जमा करना चाहते हैं? / Submit your test now?"))return;finished=true;if(tick)clearInterval(tick);let score=0,review="";quiz.forEach((q,i)=>{const chosen=document.querySelector(`input[name="q${i}"]:checked`);const val=chosen?Number(chosen.value):-1;const ok=val===q.a;if(ok)score++;review+=`<div class="review-item"><b>${i+1}. ${q.hi}</b><div class="muted">${q.en}</div><p class="${ok?'correct':'wrong'}">${ok?'✓ सही / Correct':'✗ गलत या छोड़ा / Incorrect or unanswered'}</p><div><b>सही उत्तर / Correct answer:</b> ${"ABCD"[q.a]}. ${q.opts[q.a]}</div><div class="muted" style="margin-top:5px">${q.ex}</div></div>`;});$("testPanel").classList.add("hidden");$("resultPanel").classList.remove("hidden");$("score").textContent=`${score}/10`; $("resultTitle").textContent=score>=8?"शानदार! Excellent!":score>=5?"अच्छा प्रयास! Good effort!":"अभ्यास जारी रखें / Keep practising";$("studentResult").textContent=`${student} • ${new Date().toLocaleString()}`;$("resultMessage").textContent=`प्रतिशत / Percentage: ${score*10}%${auto?" • समय पूरा हुआ, टेस्ट अपने-आप जमा हुआ। / Time expired; auto-submitted.":""}`;
+$("review").innerHTML=review;
+saveResult(score);
+window.scrollTo({top:0,behavior:"smooth"});
+}
 $("startBtn").addEventListener("click",startTest);$("submitBtn").addEventListener("click",()=>submitTest(false));
 </script>
 </body>
